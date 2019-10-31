@@ -1,4 +1,4 @@
-package ru.skdev.sb.benchmarks;
+package ru.skdev.sb;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -31,8 +31,8 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 @State(Scope.Benchmark)
 @Fork(value = 1, jvmArgs = {"-Xms2G", "-Xmx2G"})
 @Threads(1)
-@Warmup(iterations = 2)
-@Measurement(iterations = 4)
+@Warmup(iterations = 3)
+@Measurement(iterations = 5)
 public class BenchmarkLists {
 
     @Param({"10000"})

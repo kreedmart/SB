@@ -1,4 +1,4 @@
-package ru.skdev.sb.threads;
+package ru.skdev.sb;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -30,13 +30,12 @@ public class ThreadsSameTimeStart {
                         Level.INFO,
                         "Thread {0} is waiting for barrier",
                         new Object[]{Thread.currentThread().getName()});
-
                 barrier.await();
-                LOGGER.log(
+                
+                LOGGER.log(        
                         Level.INFO,
                         "Thread {0} is working",
                         new Object[]{Thread.currentThread().getName()});
-
                 Thread.sleep(5000);
 
                 LOGGER.log(
@@ -53,12 +52,12 @@ public class ThreadsSameTimeStart {
 
     public static void main(String[] args) throws InterruptedException, BrokenBarrierException {
         CyclicBarrier barrier = new CyclicBarrier(4);
-
         ExecutorService threadPool = Executors.newFixedThreadPool(3);
+
         threadPool.submit(new DummyTask(barrier));
         threadPool.submit(new DummyTask(barrier));
         threadPool.submit(new DummyTask(barrier));
 
-        barrier.await();
+        barrier.await();        
     }
 }
