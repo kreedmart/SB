@@ -17,6 +17,7 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.infra.Blackhole;
+import org.openjdk.jmh.results.format.ResultFormatType;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
@@ -29,18 +30,20 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
-@Fork(value = 1, jvmArgs = {"-Xms2G", "-Xmx2G"})
+@Fork(value = 2, jvmArgs = {"-Xms2G", "-Xmx2G"})
 @Threads(1)
-@Warmup(iterations = 3)
-@Measurement(iterations = 5)
+@Warmup(iterations = 1)
+@Measurement(iterations = 3)
 public class BenchmarkLists {
 
-    @Param({"10000"})
+    @Param({"50", "100", "200", "400", "800", "1600", "3200", "6400", "12800"})
     private int N;
-        
+
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
                 .include(BenchmarkLists.class.getSimpleName())
+                .result("lists-benchmark.csv")
+                .resultFormat(ResultFormatType.CSV)
                 .build();
 
         new Runner(opt).run();
@@ -59,15 +62,53 @@ public class BenchmarkLists {
         }
     }
 
-    @Benchmark
-    public void arrayList(Blackhole bh) {
-        ArrayList<Long> arrayList = new ArrayList<>();
-        insertToMiddle(arrayList, bh);
+    private void insertToBegin(List<Long> list, Blackhole bh) {
+        for (int i = 0; i < N; i++) {
+            list.add(0, Long.MAX_VALUE);
+            bh.consume(i);
+        }
+    }
+
+    private void insertToEnd(List<Long> list, Blackhole bh) {
+        for (int i = 0; i < N; i++) {
+            list.add(Long.MAX_VALUE);
+            bh.consume(i);
+        }
     }
 
     @Benchmark
-    public void linkedList(Blackhole bh) {
-        LinkedList<Long> linkedList = new LinkedList<>();
-        insertToMiddle(linkedList, bh);
+    public void arrayListInsertToBegin(Blackhole bh) {
+        List<Long> list = new ArrayList<>();
+        insertToBegin(list, bh);
+    }
+
+    @Benchmark
+    public void linkedListInsertToBegin(Blackhole bh) {
+        List<Long> list = new LinkedList<>();
+        insertToBegin(list, bh);
+    }
+
+    @Benchmark
+    public void arrayListInsertToMiddle(Blackhole bh) {
+        List<Long> list = new ArrayList<>();
+        insertToMiddle(list, bh);
+    }
+
+    @Benchmark
+    public void linkedListInsertToMiddle(Blackhole bh) {
+        List<Long> list = new LinkedList<>();
+        insertToMiddle(list, bh);
+    }
+
+    @Benchmark
+    public void arrayListInsertToEnd(Blackhole bh) {
+        List<Long> list = new ArrayList<>();
+        insertToEnd(list, bh);
+    }
+
+    @Benchmark
+    public void linkedListInsertToEnd(Blackhole bh) {
+        List<Long> list = new LinkedList<>();
+        insertToEnd(list, bh);
     }
 }
